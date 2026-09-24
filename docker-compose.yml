@@ -1,0 +1,48 @@
+# One-command local stack: PostgreSQL + FastAPI backend + React frontend (nginx).
+#
+#   docker compose up --build
+#
+# Then open http://localhost:8080 . The backend defaults to LLM_PROVIDER=fake so the
+# whole app works offline with no API key. To use real LLMs, set LLM_PROVIDER=openrouter
+# and OPENROUTER_API_KEY in a .env file (see .env.example) before `up`.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: sur
+      POSTGRES_PASSWORD: sur_password
+      POSTGRES_DB: synthetic_research
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sur -d synthetic_research"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgresql+psycopg2://sur:sur_password@db:5432/synthetic_research
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production-with-a-32-byte-random-secret}
+      LLM_PROVIDER: ${LLM_PROVIDER:-fake}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      MODEL_NAME: ${MODEL_NAME:-}
+      CORS_ORIGINS: http://localhost:8080
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  pgdata:
