@@ -1,0 +1,37 @@
+[project]
+name = "synthetic-user-research-backend"
+version = "1.0.0"
+description = "FastAPI backend for the Synthetic User Research Platform"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = ["B008"]  # FastAPI Depends() in defaults is idiomatic
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E402"]        # env must be set before app imports in conftest
+"app/main.py" = ["E402"]    # router import after logging config
+"alembic/env.py" = ["E402"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = false
+disallow_untyped_defs = false
+exclude = "alembic/"

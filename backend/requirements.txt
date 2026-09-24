@@ -1,0 +1,32 @@
+# ---- Web / API ----
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+
+# ---- Data / validation ----
+pydantic>=2.7.0
+pydantic-settings>=2.3.0
+email-validator>=2.1.0
+
+# ---- Database ----
+SQLAlchemy>=2.0.30
+alembic>=1.13.0
+psycopg2-binary>=2.9.9          # PostgreSQL driver (docker-compose)
+
+# ---- Auth / security ----
+PyJWT>=2.8.0
+passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.1,<4.1              # pinned: passlib 1.7.x reads bcrypt.__about__
+
+# ---- AI pipeline (preserved) ----
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-openai>=0.2.0
+
+# ---- Reports / config ----
+reportlab>=4.2.0
+python-dotenv>=1.0.1
+
+# ---- Optional dev/demo UI ----
+streamlit>=1.38.0
