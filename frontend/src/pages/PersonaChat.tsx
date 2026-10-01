@@ -23,6 +23,23 @@ export function PersonaChat() {
       .catch(() => setPersona(null));
   }, [id, personaId]);
 
+  useEffect(()=>{
+    personaApi
+      .conversations(personaId)
+      .then((list)=>{
+        if (list.length>0){
+          setConversationId(list[0].id);
+          setMessages(list[0].messages);
+        }
+      })
+      .catch(()=>{});
+  },[personaId]);
+
+  const newSession=()=>{
+    setConversationId(undefined);
+    setMessages([]);
+  };
+
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -65,6 +82,9 @@ export function PersonaChat() {
             <Link to={`/research/${id}`}>back to project</Link>
           </p>
         </div>
+        <button className="btn btn-secondary btn-sm" onClick={newSession} disabled={busy}>
+          New Session
+        </button>
       </div>
 
       <div className="banner banner-warn">

@@ -23,7 +23,16 @@ class ConversationRepository:
             .options(selectinload(Conversation.messages))
             .where(Conversation.id == conversation_id)
         )
-
+        
+    def list_for_persona(self,persona_id:str)->list[Conversation]:
+        return list(
+            self.db.scalars(
+                select(Conversation)
+                .options(selectinload(Conversation.messages))
+                .where(Conversation.persona_id==persona_id)
+                .order_by(Conversation.created_at.desc())
+            )
+        )
     def next_index(self, conversation_id: str) -> int:
         current = self.db.scalar(
             select(func.count())
@@ -32,13 +41,4 @@ class ConversationRepository:
         )
         return current or 0
 
-    def add_message(
-        self, *, conversation_id: str, role: str, content: str, order_index: int
-    ) -> ConversationMessage:
-        msg = ConversationMessage(
-            conversation_id=conversation_id, role=role, content=content, order_index=order_index
-        )
-        self.db.add(msg)
-        self.db.commit()
-        self.db.refresh(msg)
-        return msg
+    

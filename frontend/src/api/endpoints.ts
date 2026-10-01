@@ -42,7 +42,12 @@ export const personaApi = {
       message,
       conversation_id: conversationId,
     }),
-  conversation: (conversationId: string) =>
+  conversations:(personaId:string)=>
+    api.get<{id:String; persona_id:String;messages:ChatMessage[]}[]>(
+      `/personas/${personaId}/conversations`,
+    )
+
+  conversations: (conversationId: string) =>
     api.get<{ id: string; persona_id: string; messages: ChatMessage[] }>(
       `/conversations/${conversationId}`,
     ),

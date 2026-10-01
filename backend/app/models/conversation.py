@@ -11,10 +11,17 @@ if TYPE_CHECKING:
 
 
 class Conversation(UUIDMixin, TimestampMixin, Base):
-    """A persona-chat session. Messages are persisted so history survives restarts
-    (fixing the original in-memory-only chat state)."""
+    """A persona chat session.
+    Each session belongs to exactly one researcher(''owner_id''), one project (''project_id''). 
+    A persona can have several sessions; each session keeps its own persisted message history so a 
+    researcher can come back later and ask follow-up questions with the earlier context.
+    """
 
     __tablename__ = "conversations"
+    
+    owner_id: Mapped[str]=mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),index=True, nullable=False
+    )
 
     persona_id: Mapped[str] = mapped_column(
         ForeignKey("personas.id", ondelete="CASCADE"), index=True, nullable=False

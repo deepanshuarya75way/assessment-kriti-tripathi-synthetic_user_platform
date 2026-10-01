@@ -91,6 +91,12 @@ class ChatService:
         )
         return conversation.id, reply
 
+    def list_conversations(self,persona_id:str,owner_id:str):
+        persona=self.research.get_persona_for_owner(persona_id,owner_id)
+        if persona is None:
+            raise NotFoundError("persona not found.")
+        return self.conversations.list_for_persona(persona_id)
+
     def get_conversation(self, conversation_id: str, owner_id: str):
         conversation = self.conversations.get(conversation_id)
         if conversation is None:

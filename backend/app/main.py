@@ -65,7 +65,6 @@ app.add_middleware(
 
 register_exception_handlers(app)
 
-
 @app.middleware("http")
 async def add_request_id(request: Request, call_next):
     request_id = request.headers.get("X-Request-ID", uuid.uuid4().hex)
